@@ -1,0 +1,21 @@
+To set up the perception pipeline (find the AR tag):
+
+roslaunch interbotix_xsarm_perception xsarm_perception.launch robot_model:=vx300s use_pointcloud_tuner_gui:=true use_armtag_tuner_gui:=true
+
+Next code is to be able to move the arm around freely:
+
+rosservice call /wx200/torque_enable "{cmd_type: 'group', name: 'arm', enable: false}"
+
+Next code is to lock the joints in the arm after the AR tag is placed infront of the camera.
+
+rosservice call /wx200/torque_enable "{cmd_type: 'group', name: 'arm', enable: true}"
+
+Use the filter settings to set up a good environment
+
+
+
+Once set up, to run the robot, type : 
+
+roslaunch interbotix_xsarm_perception xsarm_perception.launch robot_model:=vx300s use_pointcloud_tuner_gui:=true use_armtag_tuner_gui:=true enable_pipeline:=true
+
+
