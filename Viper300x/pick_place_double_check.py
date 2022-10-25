@@ -54,6 +54,7 @@ def main():
 		else:
 			bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 			bot.arm.go_to_sleep_pose()
+			break
 
 if __name__=='__main__':
 	main()
