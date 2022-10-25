@@ -52,9 +52,9 @@ def main():
 			bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 			success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="x", reverse=True)
 		else:
-			bot.arm.set_ee_pose_components(x=0.3, z=0.2)
-			bot.arm.go_to_sleep_pose()
 			break
+	bot.arm.set_ee_pose_components(x=0.3, z=0.2)
+	bot.arm.go_to_sleep_pose()
 
 if __name__=='__main__':
 	main()
