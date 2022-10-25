@@ -4,3 +4,15 @@ The First link has functions that might help us the second link has further on t
 https://github.com/Interbotix/interbotix_ros_toolboxes/blob/main/interbotix_xs_toolbox/interbotix_xs_modules/src/interbotix_xs_modules/arm.py
 
 https://github.com/Interbotix/interbotix_ros_arms/blob/master/interbotix_sdk/src/interbotix_sdk/robot_manipulation.py
+
+ Everyone please look at this link it can help with anything regarding robotics:
+ https://modernrobotics.northwestern.edu/nu-gm-book-resource/9-1-and-9-2-point-to-point-trajectories-part-1-of-2/#department
+
+
+
+Idea For AOA algorithm
+
+Check for clusters if the clusters detected have other close clusters near it then immediatly approach from the top with a pitch angle of ~~ .5
+If parrallel then ~~ 1.5 
+
+Could this be done through a simple (if) loop we can add this if unto the pre planning algorithm without having to write a AOA algorithm  
