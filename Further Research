@@ -19,3 +19,8 @@ Could this be done through a simple (if) loop we can add this if unto the pre pl
 
 
 Question I have: How much can we change the camera's code/gather info from just getting us clusters unto getting more info
+
+
+Look through the link bellow and let me know if thats for automating filters
+https://github.com/Interbotix/interbotix_ros_toolboxes/blob/main/interbotix_perception_toolbox/interbotix_perception_modules/src/interbotix_perception_modules/poin.py
+
