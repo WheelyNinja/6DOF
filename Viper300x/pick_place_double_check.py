@@ -12,8 +12,8 @@ from interbotix_perception_modules.pointcloud import InterbotixPointCloudInterfa
 # Then change to this directory and type 'python pick_place.py'
 
 def main():
-	# Initialize the arm module along with the pointcloud and armtag modules
-	bot = InterbotixManipulatorXS("vx300s", moving_time=1.5, accel_time=.75)
+# Initialize the arm module along with the pointcloud and armtag modules
+	bot = InterbotixManipulatorXS("vx300s", moving_time=2.5, accel_time=.75)
 	pcl = InterbotixPointCloudInterface()
 	armtag = InterbotixArmTagInterface()
 
@@ -29,32 +29,30 @@ def main():
 
 	# get the cluster positions
 	# sort them from max to min 'x' position w.r.t. the 'wx200/base_link' frame
-	success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="x", reverse=True)
+	while(1==1):
+		success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="x", reverse=True)
 
-	# pick up all the objects and drop them in a virtual basket in front of the robot
-	
-	# cluster might need length of instead
-	for cluster in clusters:
-		#r, g, b = cluster["color"]
-		if success == 1:
-			x, y, z = cluster["position"]
-			#print(r,g,b)
-			bot.arm.set_ee_pose_components(x=x+.025, y=y-0.03, z=z+0.065, pitch=0.5)
-			bot.arm.set_ee_pose_components(x=x+.025, y=y-0.03, z=z+0.025, pitch=0.5)
-			bot.gripper.close()
-			bot.arm.set_ee_pose_components(x=x+.02, y=y-0.03, z=z+0.1, pitch=0.5)
-			bot.arm.set_ee_pose_components(x=0.3, z=0.2)
+		# pick up all the objects and drop them in a virtual basket in front of the robot
+		
+		while (success==1):
+			for cluster in clusters:
+				x, y, z = cluster["position"]
+				#r, g, b = cluster["color"]
+				#print(r,g,b)
+				bot.arm.set_ee_pose_components(x=x-0.015, y=y-0.03, z=z+0.075, pitch=0.5)
+				bot.arm.set_ee_pose_components(x=x-0.015, y=y-0.03, z=z+0.025, pitch=0.5)
+				bot.gripper.close()
+				bot.arm.set_ee_pose_components(x=x+.02, y=y-0.03, z=z+0.1, pitch=0.5)
+				bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
-			bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
-			bot.arm.set_ee_pose_components(y=-0.4, z=0.1)
-			bot.gripper.open() 
-			bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
-			bot.arm.set_ee_pose_components(x=0.3, z=0.2)
+				bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
+				bot.arm.set_ee_pose_components(y=-0.4, z=0.1)
+				bot.gripper.open() 
+				bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
+				break
 			success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="x", reverse=True)
-		else:
-			break
-	bot.arm.set_ee_pose_components(x=0.3, z=0.2)
-	bot.arm.go_to_sleep_pose()
-
+		#bot.arm.set_ee_pose_components(x=0.3, z=0.2)
+		#bot.arm.go_to_sleep_pose()
+		time.sleep(2)
 if __name__=='__main__':
-	main()
+    main()
