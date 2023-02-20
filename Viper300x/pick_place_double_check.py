@@ -30,7 +30,7 @@ def main():
 	# get the cluster positions
 	# sort them from max to min 'x' position w.r.t. the 'wx200/base_link' frame
 	while(1==1):
-		success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="x", reverse=True)
+		success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="y", reverse=False)
 
 		# pick up all the objects and drop them in a virtual basket in front of the robot
 		
@@ -39,18 +39,20 @@ def main():
 				x, y, z = cluster["position"]
 				#r, g, b = cluster["color"]
 				#print(r,g,b)
-				bot.arm.set_ee_pose_components(x=x-0.015, y=y-0.03, z=z+0.075, pitch=0.5)
-				bot.arm.set_ee_pose_components(x=x-0.015, y=y-0.03, z=z+0.025, pitch=0.5)
+				bot.arm.set_ee_pose_components(x=x, y=y, z=0.2)
+				bot.arm.set_ee_cartesian_trajectory(z=z-0.18)
 				bot.gripper.close()
-				bot.arm.set_ee_pose_components(x=x+.02, y=y-0.03, z=z+0.1, pitch=0.5)
+				bot.arm.set_ee_pose_components(x=x+.02, y=y-0.03, z=z+0.1)
 				bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
-				bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
-				bot.arm.set_ee_pose_components(y=-0.4, z=0.1)
+				bot.arm.set_ee_pose_components(y=-0.4, z=0.2)
+				#bot.arm.set_ee_pose_components(y=-0.4, z=0.2)
+				bot.arm.set_ee_cartesian_trajectory(z=z-0.18)
 				bot.gripper.open() 
 				bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
+				
 				break
-			success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="x", reverse=True)
+			success, clusters = pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="y", reverse=False)
 		#bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 		#bot.arm.go_to_sleep_pose()
 		time.sleep(2)
