@@ -1,0 +1,18 @@
+class example:
+    a = 0
+    b = 0
+        
+    def get_xy(self,x,y):
+        self.a = x
+        self.b = y
+        
+    def test(self):
+        return self.a + self.b
+    
+    
+    
+
+roboArm = example()
+roboArm.get_xy(5,5)
+
+print(roboArm.test())
