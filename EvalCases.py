@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import random
+#import numpy as np
+#import random
 import csv
-from sklearn.ensemble import RandomForestClassifier
+#from sklearn.ensemble import RandomForestClassifier
 
 degrees = []
 with open('cases_R.csv','r') as csvfile:
