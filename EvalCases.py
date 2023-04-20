@@ -27,7 +27,7 @@ with open('cases_R.csv','r') as csvfile:
             ys.append(float(row[4]))
             ys.append(float(row[7]))
             
-            plt.scatter(xs,ys,s=9843.12728549)
+            plt.scatter(xs,ys,s=9843.12728549) #try this too 2460.78182138
             plt.xlim([-70,70])
             plt.ylim([-70,70])
             plt.title(str(count+1))
