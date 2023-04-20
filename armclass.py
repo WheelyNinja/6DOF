@@ -19,27 +19,31 @@ class armcode:
         self.armtag = InterbotixArmTagInterface()
         self.success, self.clusters = self.pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="y", reverse=False)
         self.angle = 0
+        self.z = 0.01
+        self.flag = False
 
-        self.MLP = pickle.load(open("model_pickle", 'rb'))
+        self.MLP = pickle.load(open("Mrgoodboy", 'rb'))
 
     def scanner(self):
         self.success, self.clusters = self.pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="y", reverse=False)
-            
+  
         pass_on = True
-        x,y,z = self.clusters[0]["position"]
-        X,Y = self.error(x,y)
+        if len(self.clusters) >= 1:
+            x,y,self.z = self.clusters[0]["position"]
+        else: 
+            pass_on = False
+            return pass_on
         
-        if z < 0.04:
+        if self.z < 0.04:
             pass_on = True
-            x += X
-            y += Y
+
         else:
             pass_on = False 
             
         if self.success == False:
             pass_on = False
         
-        return pass_on, x, y
+        return pass_on
 
     def ml(self):
         x,y,z = self.clusters[0]["position"]         #1st doughball
@@ -51,7 +55,8 @@ class armcode:
         
 
         #dis_list[0] = 1
-        
+
+
         for cluster in self.clusters[1:]:
             single = False
             x_n,y_n,z_n = x,y,z
@@ -67,6 +72,8 @@ class armcode:
                 dis_list.append(y_n-y)
                 dis_list.append(theta)
         
+        self.flag = False
+
         if len(dis_list) == 3:
             dis_list.append(0)
             dis_list.append(0)
@@ -79,15 +86,8 @@ class armcode:
             dis_list.append(0)
             dis_list.append(0)
         elif len(dis_list) == 0: 
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
-            dis_list.append(0)
+            self.flag = True
+            return
 
         
         array = [dis_list]
@@ -107,11 +107,11 @@ class armcode:
         x,y,z = self.clusters[0]["position"]
         X,Y = self.error(x,y)
         
-        x += X
-        y += Y
+        #x += X
+        #y += Y
 
     
-        if y < Disyl: 
+        if y < Disyl and not self.flag: 
             r = np.sqrt(x**2 + y**2)
             theta = np.arctan(y/x)
             if theta < 0:
@@ -121,9 +121,10 @@ class armcode:
             # conversion
             x = r * np.cos(theta)
             y = r * np.sin(theta)
-            roll = (self.angle)*1.5/90                     
+            roll = (self.angle)*1.5/90
+            print(roll)                     
             self.bot.arm.set_ee_pose_components(x=x, y=y, z=0.2, pitch=1.5, roll = roll)
-            self.bot.arm.set_ee_cartesian_trajectory(z=z-0.18)	
+            self.bot.arm.set_ee_cartesian_trajectory(z=z-0.185)	
         else: 
             x -= 0.0
             self.bot.arm.set_ee_pose_components(x=x, y=y, z=0.2)
@@ -300,6 +301,8 @@ class armcode:
         self.bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
         self.bot.arm.set_ee_pose_components(y=-0.4, z=0.2)
+        #bot.arm.set_ee_pose_components(y=-0.4, z=0.2)
+        self.bot.arm.set_ee_cartesian_trajectory(z=self.z-0.18)
         self.bot.gripper.open() 
         self.bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
     
@@ -307,14 +310,15 @@ class armcode:
         self.bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
     def run(self):
-        self.place()
+        self.home()
         while(1==1):
-            pass_on, x, y = self.scanner()
+            pass_on = self.scanner()
+            print(pass_on)
             while(pass_on == True):
                 self.ml()
                 self.AOA()
                 self.place()
-                pass_on, x, y = self.scanner()
+                pass_on = self.scanner()
 
 
 
