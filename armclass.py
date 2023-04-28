@@ -236,7 +236,7 @@ class armcode:
         self.bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
 #The Run function calls all of the previous functions in the order we intend
-#the tasks to completed 
+#the tasks to be completed 
     def run(self):
         self.calibrate()
         self.home()
