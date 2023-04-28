@@ -11,7 +11,10 @@ from sklearn.metrics import r2_score
 import time 
 import pickle
 
+#Armcode class contains all our functions used for our project
 class armcode:
+    
+    #This function initializes all of our varialbles used throughout the Armcode Class
     def __init__(self):
 
         self.bot = InterbotixManipulatorXS("vx300s", moving_time=2.5, accel_time=.75)
@@ -30,6 +33,10 @@ class armcode:
 
         self.RF = pickle.load(open("Mrgoodboy", 'rb'))
 
+#The Scanner function scans the area and ensures that there is no abnormaly
+#large objects. If there is a large object in the area then the function asks
+#the user to fix the large object. If the object is not to large then pass_on
+#will be true and it will go into the AOA function
     def scanner(self):
         self.success, self.clusters = self.pcl.get_cluster_positions(ref_frame="vx300s/base_link", sort_axis="y", reverse=False)
        
@@ -60,6 +67,8 @@ class armcode:
         
         return pass_on
 
+#The Calibrate function loads our filter parameters and then reads a single
+#doughball in the center in order to determine the offset for our x and y values
     def calibrate(self):
         self.pcl.load_params(filepath = "AOAerror.yaml")
         self.home()
@@ -74,6 +83,9 @@ class armcode:
         self.x_off = x - 0.012
         print(self.y_off, self.x_off)
 
+#The ML function uses a pretrained network to predict the best angle for 
+#picking up one cluster within a set of clusters. The angle is then passed on
+#to the AOA function.
     def ml(self):
         self.x,self.y,self.z = self.clusters[0]["position"]         #1st doughball
         
@@ -125,7 +137,11 @@ class armcode:
         y_pred = self.RF.predict(array)
         print(y_pred)
         self.angle = y_pred
-
+    
+ #The Compare function scans everything around the intended doughball 
+ #if the dougball was not picked up then the robot reattempts to pick up the 
+ #doughball. If the doughball is close to another doughball then the user must 
+ # fix the issue before continuing 
     def compare(self):
         count = 0 
         size = []
@@ -154,6 +170,10 @@ class armcode:
         else:
            return False
 
+#The AOA (Angle of Approach) function determines whether the robot arm would
+#pick up the doughball from a perpendicular or a parallel approach. If it is a
+#perpendicular approach then the function is passed on an angle from the ML
+#function which determines the best roll for the given scenario. 
     def AOA(self):
         self.bot.gripper.open()
         Disyl = .565 #blue tape distance
@@ -193,7 +213,8 @@ class armcode:
         self.bot.gripper.close()
         self.bot.arm.set_ee_cartesian_trajectory(z=z+0.18)
 
-
+#The Place function moves the robot arm in a way so that it places the 
+#dougballs in a 4x4 array 
     def place(self):
         self.bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
@@ -208,10 +229,14 @@ class armcode:
         self.bot.gripper.open() 
         self.bot.arm.set_ee_pose_components(y=-0.35, z=0.2)
         self.counter += 1
-    
+        
+#The Home function will be the "safe" position where the robot arm goes before 
+#and after moving so that it is not in the way of the camera
     def home(self):
         self.bot.arm.set_ee_pose_components(x=0.3, z=0.2)
 
+#The Run function calls all of the previous functions in the order we intend
+#the tasks to completed 
     def run(self):
         self.calibrate()
         self.home()
@@ -227,6 +252,3 @@ class armcode:
                 if x == True:
                     self.place()
                 pass_on = self.scanner()
-
-
-
